@@ -1,0 +1,38 @@
+# Eclipse project files
+.classpath
+.project
+.settings/
+.metadata/
+
+# Build output
+/build/
+/bin/
+/target/
+*.class
+
+# Eclipse launch configs
+*.launch
+
+# IDE specific
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Logs
+*.log
+logs/
+
+# Dependency directories (if any)
+node_modules/
+
+# Secrets — never commit API keys!
+src/main/resources/gemini.properties

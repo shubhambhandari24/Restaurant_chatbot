@@ -1,0 +1,140 @@
+/* ===================================================
+   THEME TOKENS — Savor & Sage Restaurant App
+   Shared by all pages via <link rel="stylesheet">
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
+
+/* ---- LIGHT MODE (default) ---- */
+:root {
+  --gold:        #d4af37;
+  --gold-dark:   #b8952a;
+  --gold-light:  #f0d060;
+  --gold-glow:   rgba(212,175,55,0.25);
+
+  --bg:          #fdf8f0;
+  --bg-2:        #f5ede0;
+  --bg-card:     #ffffff;
+  --bg-input:    #f0e8d8;
+  --bg-sidebar:  #faf4ea;
+
+  --border:      rgba(212,175,55,0.35);
+  --border-soft: rgba(212,175,55,0.15);
+
+  --text-primary:   #1a1208;
+  --text-secondary: #6b5c3e;
+  --text-muted:     #a08060;
+
+  --bubble-bot-bg:   #fff9ee;
+  --bubble-bot-border: rgba(212,175,55,0.3);
+  --bubble-user-bg:  #d4af37;
+  --bubble-user-text:#1a1208;
+
+  --shadow: 0 8px 32px rgba(180,140,40,0.12);
+  --shadow-lg: 0 20px 60px rgba(180,140,40,0.18);
+
+  --orb1: rgba(212,175,55,0.18);
+  --orb2: rgba(255,160,60,0.12);
+  --orb3: rgba(212,175,55,0.08);
+
+  --toggle-track:  #e0d0a8;
+  --toggle-thumb:  #d4af37;
+
+  --transition: 0.4s cubic-bezier(.4,0,.2,1);
+}
+
+/* ---- DARK MODE ---- */
+[data-theme="dark"] {
+  --bg:          #0e0c09;
+  --bg-2:        #13110d;
+  --bg-card:     #1a1710;
+  --bg-input:    #0e0c09;
+  --bg-sidebar:  #111108;
+
+  --border:      rgba(212,175,55,0.28);
+  --border-soft: rgba(212,175,55,0.10);
+
+  --text-primary:   #f5ead0;
+  --text-secondary: #c8b07a;
+  --text-muted:     #7a6a4a;
+
+  --bubble-bot-bg:   #1e1b10;
+  --bubble-bot-border: rgba(212,175,55,0.22);
+  --bubble-user-bg:  #d4af37;
+  --bubble-user-text:#0e0c09;
+
+  --shadow: 0 8px 32px rgba(0,0,0,0.50);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.65);
+
+  --orb1: rgba(212,175,55,0.10);
+  --orb2: rgba(180,120,20,0.08);
+  --orb3: rgba(212,175,55,0.05);
+
+  --toggle-track:  #2c2410;
+  --toggle-thumb:  #d4af37;
+}
+
+/* ---- GLOBAL RESET ---- */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: background var(--transition), color var(--transition);
+  min-height: 100vh;
+}
+
+/* ---- THEME TOGGLE BUTTON ---- */
+.theme-toggle {
+  position: fixed;
+  top: 22px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 14px 6px 8px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all var(--transition);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  user-select: none;
+}
+.theme-toggle:hover { box-shadow: var(--shadow-lg); transform: scale(1.04); }
+
+.theme-toggle .icon {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.5s ease;
+}
+.theme-toggle .track {
+  width: 38px;
+  height: 20px;
+  background: var(--toggle-track);
+  border-radius: 20px;
+  position: relative;
+  transition: background var(--transition);
+}
+.theme-toggle .thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--toggle-thumb);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 0.35s cubic-bezier(.4,0,.2,1), background var(--transition);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+[data-theme="dark"] .theme-toggle .thumb { left: 20px; }
+[data-theme="dark"] .theme-toggle .icon.sun  { opacity:0.4; }
+[data-theme="dark"] .theme-toggle .icon.moon { opacity:1; }
+.theme-toggle .icon.sun  { opacity:1; }
+.theme-toggle .icon.moon { opacity:0.4; }

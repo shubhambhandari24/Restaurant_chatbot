@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PlateUp — n8n Test Trigger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      background: #0d0d1a;
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #16213e;
+      border: 1px solid #2a2a4a;
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .logo { font-size: 40px; text-align: center; margin-bottom: 10px; }
+    h1 { text-align: center; font-size: 26px; color: #f59e0b; margin-bottom: 4px; }
+    .sub { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 32px; }
+
+    label { display: block; font-size: 13px; font-weight: 600; color: #9ca3af; margin-bottom: 6px; margin-top: 16px; }
+    input {
+      width: 100%;
+      background: #0d0d1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: #f59e0b; }
+
+    .btn {
+      width: 100%;
+      margin-top: 28px;
+      padding: 16px;
+      background: #f59e0b;
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn:hover { background: #d97706; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,0.4); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { background: #374151; color: #6b7280; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .result {
+      margin-top: 24px;
+      padding: 18px 20px;
+      border-radius: 12px;
+      display: none;
+      font-size: 14px;
+    }
+    .result.success {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #10b981;
+    }
+    .result.error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #ef4444;
+    }
+    .result-title { font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+    .result-data { font-family: monospace; font-size: 12px; white-space: pre-wrap; color: #9ca3af; margin-top: 8px; }
+
+    .step-hint {
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.6;
+    }
+    .step-hint strong { color: #f59e0b; }
+    .badge {
+      display: inline-block;
+      background: #f59e0b;
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🍽️</div>
+    <h1>PlateUp — n8n Demo</h1>
+    <p class="sub">Manually trigger the n8n automation workflow</p>
+
+    <div class="step-hint">
+      <span class="badge">Step 1</span> Go to n8n → Click <strong>"Execute workflow"</strong><br>
+      <span class="badge">Step 2</span> Fill details below and click <strong>Send Order to n8n</strong><br>
+      <span class="badge">Step 3</span> Watch all 3 nodes turn <strong>GREEN</strong> ✅
+    </div>
+
+    <label>Order ID</label>
+    <input type="number" id="orderId" value="42" placeholder="e.g. 42">
+
+    <label>Customer Name</label>
+    <input type="text" id="customerName" value="Shubham Bhandari" placeholder="Customer name">
+
+    <label>Customer Email</label>
+    <input type="text" id="customerEmail" value="shubham@plateup.com" placeholder="customer@email.com">
+
+    <label>Items Ordered</label>
+    <input type="text" id="items" value="2x Butter Chicken, 1x Dal Makhani" placeholder="items ordered">
+
+    <label>Total Amount (₹)</label>
+    <input type="number" id="total" value="760" placeholder="e.g. 760">
+
+    <button class="btn" id="sendBtn" onclick="sendToN8n()">
+      🚀 Send Order to n8n
+    </button>
+
+    <div class="result" id="result">
+      <div class="result-title" id="resultTitle"></div>
+      <div id="resultMsg"></div>
+      <div class="result-data" id="resultData"></div>
+    </div>
+  </div>
+
+  <script>
+    async function sendToN8n() {
+      const btn = document.getElementById('sendBtn');
+      const result = document.getElementById('result');
+
+      const payload = {
+        orderId:       parseInt(document.getElementById('orderId').value) || 42,
+        customerName:  document.getElementById('customerName').value || 'Demo User',
+        customerEmail: document.getElementById('customerEmail').value || 'demo@plateup.com',
+        items:         document.getElementById('items').value || '1x Butter Chicken',
+        total:         parseFloat(document.getElementById('total').value) || 500,
+        timestamp:     new Date().toISOString()
+      };
+
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Sending to n8n...';
+      result.style.display = 'none';
+
+      try {
+        const res = await fetch('http://localhost:5678/webhook-test/plateup-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        result.className = 'result success';
+        document.getElementById('resultTitle').textContent = '✅ n8n Responded Successfully!';
+        document.getElementById('resultMsg').textContent = 'All 3 nodes turned GREEN in n8n dashboard.';
+        document.getElementById('resultData').textContent = JSON.stringify(data, null, 2);
+        result.style.display = 'block';
+
+        btn.innerHTML = '✅ Sent! Check n8n Dashboard';
+      } catch (err) {
+        result.className = 'result error';
+        document.getElementById('resultTitle').textContent = '❌ Could not reach n8n';
+        document.getElementById('resultMsg').textContent = 'Make sure n8n is running and "Execute workflow" was clicked first.';
+        document.getElementById('resultData').textContent = err.message;
+        result.style.display = 'block';
+        btn.innerHTML = '🚀 Try Again';
+      }
+
+      setTimeout(() => {
+        btn.disabled = false;
+        if (!btn.textContent.includes('Try')) {
+          btn.innerHTML = '🚀 Send Order to n8n';
+        }
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

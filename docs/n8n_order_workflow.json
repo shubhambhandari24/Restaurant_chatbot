@@ -1,0 +1,99 @@
+{
+  "name": "PlateUp - Order Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "plateup-order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "node1",
+      "name": "Order Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "status",
+              "value": "confirmed",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "message",
+              "value": "=Order #{{ $json.orderId }} confirmed for {{ $json.customerName }}! Items: {{ $json.items }}. Estimated delivery: 30-45 mins.",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "orderId",
+              "value": "={{ $json.orderId }}",
+              "type": "number"
+            },
+            {
+              "id": "f4",
+              "name": "customerName",
+              "value": "={{ $json.customerName }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "customerEmail",
+              "value": "={{ $json.customerEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "items",
+              "value": "={{ $json.items }}",
+              "type": "string"
+            },
+            {
+              "id": "f7",
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node2",
+      "name": "Format Order",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "node3",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [750, 300]
+    }
+  ],
+  "connections": {
+    "Order Webhook": {
+      "main": [[{ "node": "Format Order", "type": "main", "index": 0 }]]
+    },
+    "Format Order": {
+      "main": [[{ "node": "Respond Success", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" },
+  "tags": ["PlateUp", "Restaurant", "Automation"]
+}
