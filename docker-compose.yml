@@ -4,6 +4,7 @@ version: "3.9"
 
 services:
 
+  # ─── MySQL Database ────────────────────────────────────────
   db:
     image: mysql:8.3
     container_name: restaurant_db
@@ -12,16 +13,34 @@ services:
       MYSQL_ROOT_PASSWORD: Shubham@127
       MYSQL_DATABASE: ai_restaurant_chatbot
     ports:
-      - "3307:3306"          # 3307 on host so it doesn't clash with your local MySQL
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./docs/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro  # auto-imports schema
+      - ./docs/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # ─── n8n Automation (FREE, runs locally) ──────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: restaurant_n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678
+      - GENERIC_TIMEZONE=Asia/Kolkata
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  # ─── Restaurant Chatbot App ────────────────────────────────
   app:
     build: .
     container_name: restaurant_app
@@ -31,14 +50,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      n8n:
+        condition: service_started
     environment:
-      # DB — points to the 'db' container above
       DB_URL: jdbc:mysql://db:3306/ai_restaurant_chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       DB_USER: root
       DB_PASSWORD: Shubham@127
-      # Gemini — put your real key here for local Docker testing
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       GEMINI_MODEL: gemini-2.0-flash
+      # n8n webhook — uses Docker internal network (n8n container name)
+      N8N_WEBHOOK_URL: http://n8n:5678/webhook/plateup-order
 
 volumes:
   mysql_data:
+  n8n_data:
+

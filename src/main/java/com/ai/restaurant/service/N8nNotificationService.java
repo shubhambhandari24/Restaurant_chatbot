@@ -13,14 +13,21 @@ import java.net.URL;
  * Currently used for:
  *  - Order confirmation notifications (Webhook → Email)
  *
- * n8n must be running locally:  npx n8n
- * Dashboard:                    http://localhost:5678
+ * Local Docker: http://n8n:5678/webhook/plateup-order  (set via N8N_WEBHOOK_URL env var)
+ * Dashboard:    http://localhost:5678
  */
 public class N8nNotificationService {
 
-    private static final String N8N_BASE_URL   = "https://shubham2408.app.n8n.cloud/webhook";
-    private static final String ORDER_WEBHOOK  = N8N_BASE_URL + "/plateup-order";
-    private static final int    TIMEOUT_MS     = 5000;
+    // Read from env var — set in docker-compose.yml or Render environment
+    private static final String ORDER_WEBHOOK;
+    private static final int    TIMEOUT_MS = 5000;
+
+    static {
+        String envUrl = System.getenv("N8N_WEBHOOK_URL");
+        ORDER_WEBHOOK = (envUrl != null && !envUrl.isBlank())
+                        ? envUrl
+                        : "http://localhost:5678/webhook/plateup-order"; // local fallback
+    }
 
     /**
      * Sends order details to n8n which then sends a confirmation email.
