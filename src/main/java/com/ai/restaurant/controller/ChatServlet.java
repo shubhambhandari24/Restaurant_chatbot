@@ -6,12 +6,10 @@ import com.ai.restaurant.service.N8nNotificationService;
 import com.ai.restaurant.service.OrderService;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-@WebServlet("/chat")
 public class ChatServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

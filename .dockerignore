@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# Eclipse
+.classpath
+.project
+.settings
+.metadata
+
+# Build output (Docker builds fresh)
+target/
+
+# Secrets — NEVER bake these into the image
+src/main/resources/gemini.properties
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/

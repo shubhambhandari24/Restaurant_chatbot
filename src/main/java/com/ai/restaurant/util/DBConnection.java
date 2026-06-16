@@ -6,9 +6,23 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/ai_restaurant_chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-    private static final String USER = "root";
-    private static final String PASSWORD = "Shubham@127";
+    // ─── Read from environment variables (set on Render/cloud) ───────────────
+    // Falls back to localhost values so local Eclipse development still works.
+    private static final String URL;
+    private static final String USER;
+    private static final String PASSWORD;
+
+    static {
+        String envUrl  = System.getenv("DB_URL");
+        String envUser = System.getenv("DB_USER");
+        String envPass = System.getenv("DB_PASSWORD");
+
+        URL      = (envUrl  != null && !envUrl.isBlank())
+                   ? envUrl
+                   : "jdbc:mysql://localhost:3306/ai_restaurant_chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+        USER     = (envUser != null && !envUser.isBlank()) ? envUser : "root";
+        PASSWORD = (envPass != null && !envPass.isBlank()) ? envPass : "Shubham@127";
+    }
 
     private DBConnection() {}
 
@@ -18,7 +32,6 @@ public class DBConnection {
         } catch (ClassNotFoundException e) {
             throw new SQLException("MySQL JDBC Driver not found", e);
         }
-
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }

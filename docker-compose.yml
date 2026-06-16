@@ -1,0 +1,44 @@
+# docker-compose.yml — Local testing only (NOT for production)
+# Usage: docker compose up --build
+version: "3.9"
+
+services:
+
+  db:
+    image: mysql:8.3
+    container_name: restaurant_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Shubham@127
+      MYSQL_DATABASE: ai_restaurant_chatbot
+    ports:
+      - "3307:3306"          # 3307 on host so it doesn't clash with your local MySQL
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docs/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro  # auto-imports schema
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: restaurant_app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # DB — points to the 'db' container above
+      DB_URL: jdbc:mysql://db:3306/ai_restaurant_chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_USER: root
+      DB_PASSWORD: Shubham@127
+      # Gemini — put your real key here for local Docker testing
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_MODEL: gemini-2.0-flash
+
+volumes:
+  mysql_data:

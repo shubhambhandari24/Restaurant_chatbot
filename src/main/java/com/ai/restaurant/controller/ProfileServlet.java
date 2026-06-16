@@ -7,13 +7,11 @@ import com.ai.restaurant.service.OrderService;
 import com.ai.restaurant.model.Order;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

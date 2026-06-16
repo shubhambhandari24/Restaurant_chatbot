@@ -2,8 +2,64 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="https://jakarta.ee/xml/ns/jakartaee"
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
-	version="5.0">
+	version="5.0"
+	metadata-complete="true">
+
 	<display-name>Restaurant_Chatbot</display-name>
+
+	<!-- ═══ SERVLET DECLARATIONS ═══ -->
+	<servlet>
+		<servlet-name>AuthServlet</servlet-name>
+		<servlet-class>com.ai.restaurant.controller.AuthServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ChatServlet</servlet-name>
+		<servlet-class>com.ai.restaurant.controller.ChatServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>com.ai.restaurant.controller.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>PaymentServlet</servlet-name>
+		<servlet-class>com.ai.restaurant.controller.PaymentServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ProfileServlet</servlet-name>
+		<servlet-class>com.ai.restaurant.controller.ProfileServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>StaffServlet</servlet-name>
+		<servlet-class>com.ai.restaurant.controller.StaffServlet</servlet-class>
+	</servlet>
+
+	<!-- ═══ SERVLET MAPPINGS ═══ -->
+	<servlet-mapping>
+		<servlet-name>AuthServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ChatServlet</servlet-name>
+		<url-pattern>/chat</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PaymentServlet</servlet-name>
+		<url-pattern>/pay</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ProfileServlet</servlet-name>
+		<url-pattern>/profile</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>StaffServlet</servlet-name>
+		<url-pattern>/staff</url-pattern>
+	</servlet-mapping>
+
+	<!-- ═══ WELCOME FILES ═══ -->
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
@@ -14,4 +70,5 @@
 		<welcome-file>default.jsp</welcome-file>
 		<welcome-file>default.xhtml</welcome-file>
 	</welcome-file-list>
+
 </web-app>

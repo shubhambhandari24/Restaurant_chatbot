@@ -26,19 +26,31 @@ public class GeminiService {
     private static final String API_URL;
 
     static {
-        Properties props = new Properties();
-        try (InputStream is = GeminiService.class
-                .getClassLoader()
-                .getResourceAsStream("gemini.properties")) {
-            if (is == null) {
-                throw new RuntimeException("[GeminiService] gemini.properties not found in classpath!");
+        // 1️⃣ Try environment variable first (used on cloud / Render)
+        String envKey   = System.getenv("GEMINI_API_KEY");
+        String envModel = System.getenv("GEMINI_MODEL");
+
+        if (envKey != null && !envKey.isBlank()) {
+            // Running on cloud — use env vars
+            API_KEY = envKey;
+            MODEL   = (envModel != null && !envModel.isBlank()) ? envModel : "gemini-2.0-flash";
+        } else {
+            // 2️⃣ Fallback: load from local gemini.properties (local dev only)
+            Properties props = new Properties();
+            try (InputStream is = GeminiService.class
+                    .getClassLoader()
+                    .getResourceAsStream("gemini.properties")) {
+                if (is == null) {
+                    throw new RuntimeException("[GeminiService] gemini.properties not found in classpath and GEMINI_API_KEY env var is not set!");
+                }
+                props.load(is);
+            } catch (IOException e) {
+                throw new RuntimeException("[GeminiService] Failed to load gemini.properties", e);
             }
-            props.load(is);
-        } catch (IOException e) {
-            throw new RuntimeException("[GeminiService] Failed to load gemini.properties", e);
+            API_KEY = props.getProperty("gemini.api.key");
+            MODEL   = props.getProperty("gemini.model", "gemini-2.0-flash");
         }
-        API_KEY = props.getProperty("gemini.api.key");
-        MODEL   = props.getProperty("gemini.model", "gemini-2.0-flash");
+
         API_URL = "https://generativelanguage.googleapis.com/v1beta/models/"
                   + MODEL + ":generateContent?key=" + API_KEY;
     }

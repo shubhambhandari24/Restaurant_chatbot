@@ -4,12 +4,10 @@ import com.ai.restaurant.model.User;
 import com.ai.restaurant.service.AuthService;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-@WebServlet("/auth")
 public class AuthServlet extends HttpServlet {
 
     private AuthService authService = new AuthService();
